@@ -1,0 +1,13 @@
+POST http://localhost:8081/bulkTask
+Content-Type: application/json
+
+{}
+###
+
+POST http://localhost:8083/bulk/withdrawRequest
+Content-Type: application/json
+
+{
+  "bulkTaskId" : "1"
+}
+
