@@ -6,6 +6,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class RequestBulkTaskCommand {
     @TargetAggregateIdentifier
-    private final String bulkTaskId;
-    private final int totalSingleTask;
+    String bulkTaskId;
+    int totalSingleTask;
 }

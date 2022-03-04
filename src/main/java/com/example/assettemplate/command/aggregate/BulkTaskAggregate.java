@@ -12,11 +12,9 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.springframework.context.annotation.Profile;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
-@Profile("command")
 @Aggregate
 @Slf4j
 @NoArgsConstructor
@@ -30,14 +28,14 @@ public class BulkTaskAggregate {
 
     @CommandHandler
     public BulkTaskAggregate(RequestBulkTaskCommand command) {
-        log.info("CommandHandler       RequestBulkTaskCommand. command : {}", command);
+        log.info("CommandHandling {}", command);
 
         apply(new BulkTaskRequestedEvent(command.getBulkTaskId(), command.getTotalSingleTask()));
     }
 
     @EventSourcingHandler
     public void on(BulkTaskRequestedEvent event) {
-        log.info("EventSourcingHandler BulkTaskRequestedEvent. event : {}", event);
+        log.info("EventSourcing {}", event);
 
         this.bulkTaskId = event.getBulkTaskId();
         this.state = PaywdExectYn.INPROGRESS;
@@ -47,7 +45,7 @@ public class BulkTaskAggregate {
 
     @CommandHandler
     public void handler(CountSingleTaskCommand command) {
-        log.info("CommandHandler       CountSingleTaskCommand. command : {}", command);
+        log.info("CommandHandling {}", command);
 
         int doneCount = this.doneCount + 1;
         apply(new SingleTaskCountedEvent(doneCount));
@@ -58,14 +56,14 @@ public class BulkTaskAggregate {
 
     @EventSourcingHandler
     public void on(SingleTaskCountedEvent event) {
-        log.info("EventSourcingHandler SingleTaskCountedEvent. event : {}", event);
+        log.info("EventSourcing {}", event);
 
         this.doneCount++;
     }
 
     @EventSourcingHandler
     public void on(BulkTaskDoneEvent event) {
-        log.info("EventSourcingHandler BulkTaskDoneEvent. event : {}", event);
+        log.info("EventSourcing {}", event);
 
         this.state = PaywdExectYn.DONE;
     }

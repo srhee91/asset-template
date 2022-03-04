@@ -1,6 +1,6 @@
 server.port: 8082
 
-axon.eventhandling.processors.bulk-task-orchestrator:
-  thread-count: 4
-  mode: subscribing
-  initial-segment-count: 4
+#axon.eventhandling.processors.bulk-task-orchestrator:
+#  thread-count: 4
+#  mode: subscribing
+#  initial-segment-count: 4

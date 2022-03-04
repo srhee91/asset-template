@@ -4,6 +4,7 @@ import com.example.assettemplate.command.controller.dto.BulkTaskRequest;
 import com.example.assettemplate.command.service.BulkTaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,9 +16,9 @@ public class BulkTaskController {
     private final BulkTaskService bulkTaskService;
 
     @PostMapping("/withdrawRequest")
-    public void requestBulkWithdraw(@RequestBody BulkTaskRequest request) {
+    public ResponseEntity<String> requestBulkWithdraw(@RequestBody BulkTaskRequest request) {
         log.info("Controller /bulk/withdrawRequest");
-        bulkTaskService.requestBulkTask(request.getBulkTaskId());
+        return ResponseEntity.ok().body(bulkTaskService.requestBulkTask(request.getBulkTaskId()));
     }
 
     @PostMapping("/depositRequest")

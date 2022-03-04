@@ -1,10 +1,10 @@
 package com.example.assettemplate.command.aggregate;
 
+import com.example.assettemplate.assettask.service.AssetTaskService;
 import com.example.assettemplate.common.commandapi.DoSingleTaskCommand;
 import com.example.assettemplate.common.eventapi.SingleTaskDoneEvent;
 import com.example.assettemplate.common.exception.SingleTaskException;
 import com.example.assettemplate.common.repository.enums.AcdnHdlStatCd;
-import com.example.assettemplate.assettask.service.AssetTaskService;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -12,11 +12,9 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
-@Profile("command")
 @Aggregate
 @Slf4j
 @NoArgsConstructor
@@ -32,7 +30,7 @@ public class SingleTaskAggregate {
 
     @CommandHandler
     public SingleTaskAggregate(DoSingleTaskCommand command, @Autowired AssetTaskService assetService) {
-        log.info("CommandHandler       DoSingleTaskCommand. command : {}", command);
+        log.info("CommandHandling {}", command);
 
         this.assetTaskService = assetService;
 
@@ -47,7 +45,7 @@ public class SingleTaskAggregate {
 
     @EventSourcingHandler
     public void on(SingleTaskDoneEvent event) {
-        log.info("EventSourcingHandler SingleTaskDoneEvent. event : {}", event);
+        log.info("EventSourcing {}", event);
 
         this.singleTaskId = event.getSingleTaskId();
         this.bulkTaskId = event.getBulkTaskId();

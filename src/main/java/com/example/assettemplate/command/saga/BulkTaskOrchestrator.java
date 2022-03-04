@@ -7,63 +7,52 @@ import com.example.assettemplate.common.eventapi.BulkTaskRequestedEvent;
 import com.example.assettemplate.common.eventapi.SingleTaskDoneEvent;
 import com.example.assettemplate.common.repository.SingleTaskRepository;
 import com.example.assettemplate.common.repository.entity.SingleTask;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.config.ProcessingGroup;
-import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Profile("command")
 @Slf4j
-//@Saga
-@Service
+@Saga
 public class BulkTaskOrchestrator {
 
     @Autowired
-    private SingleTaskRepository singleTaskRepository;
+    private transient SingleTaskRepository singleTaskRepository;
     @Autowired
-    private CommandGateway commandGateway;
+    private transient CommandGateway commandGateway;
 
-//    @StartSaga
-//    @SagaEventHandler(associationProperty = "bulkTaskId")
-    @EventHandler
+    @StartSaga
+    @SagaEventHandler(associationProperty = "bulkTaskId")
     public void on(BulkTaskRequestedEvent event) {
-        log.info("EventHandler         BulkTaskRequestedEvent. event : {}", event);
+        log.info("SagaEventHandling {}", event);
 
         String bulkTaskId = event.getBulkTaskId();
         List<SingleTask> singleTasks = singleTaskRepository.findAllByBulkTaskId(bulkTaskId);
         for(SingleTask singleTask: singleTasks) {
             String singleTaskId = singleTask.getSingleTaskId();
-//            SagaLifecycle.associateWith("singleTaskId", singleTaskId);
+            SagaLifecycle.associateWith("singleTaskId", singleTaskId);
             commandGateway.send(new DoSingleTaskCommand(singleTaskId, bulkTaskId));
         }
     }
 
-//    @SagaEventHandler(associationProperty = "singleTaskId")
-    @EventHandler
+    @SagaEventHandler(associationProperty = "singleTaskId")
     public void on(SingleTaskDoneEvent event) {
-        log.info("EventHandler         SingleTaskDoneEvent. event : {}", event);
+        log.info("SagaEventHandling {}", event);
 
         String bulkTaskId = event.getBulkTaskId();
-//        SagaLifecycle.associateWith("bulkTaskId", bulkTaskId);
+        SagaLifecycle.associateWith("bulkTaskId", bulkTaskId);
         commandGateway.send(new CountSingleTaskCommand(bulkTaskId, event.getSingleTaskId()));
     }
 
-//    @SagaEventHandler(associationProperty = "bulkTaskId")
-//    @EndSaga
-    @EventHandler
+    @SagaEventHandler(associationProperty = "bulkTaskId")
+    @EndSaga
     public void on(BulkTaskDoneEvent event) {
-        log.info("EventHandler         BulkTaskDoneEvent. event : {}", event);
+        log.info("SagaEventHandling {}", event);
     }
 }

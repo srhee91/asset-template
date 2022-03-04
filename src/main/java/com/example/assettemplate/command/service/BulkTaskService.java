@@ -16,8 +16,8 @@ public class BulkTaskService {
     private final CommandGateway commandGateway;
     private final BulkTaskRepository bulkTaskRepository;
 
-    public void requestBulkTask(String seq) {
+    public String requestBulkTask(String seq) {
         BulkTask bulkTask = bulkTaskRepository.findById(seq).orElseThrow();
-        commandGateway.sendAndWait(new RequestBulkTaskCommand(seq, bulkTask.getTargetMemberCount()));
+        return commandGateway.sendAndWait(new RequestBulkTaskCommand(seq, bulkTask.getTargetMemberCount()));
     }
 }

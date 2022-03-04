@@ -1,17 +1,10 @@
-# The name of this app:
-spring.application.name: Async-Asset-Axon-App-${spring.profiles.active}
 server.port: 8081
 
-# Debugging on
-logging.level.io.axoniq.demo: debug
-
-# We look for Axon Server locally, unless we find a PCF Binding for AxonServer
-axon.axonserver.servers: ${vcap.services.AxonServer.credentials.uri:localhost}
-
-# The default profiles are "all of them"
-spring.profiles.active: command, query
-
 spring:
+  application:
+    name: Async-Asset-Axon-App-${spring.profiles.active}
+  profiles:
+    active: command, query
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:XE
     username: oracle_test
@@ -19,9 +12,16 @@ spring:
     driver-class-name: oracle.jdbc.driver.OracleDriver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true #false
+
+axon:
+  serializer:
+    general: xstream
+  axonserver:
+    servers: ${vcap.services.AxonServer.credentials.uri:localhost}
 
 logging:
   level:
-    com: debug
+    com.example.assettemplate: debug
+    org.axonframework: debug

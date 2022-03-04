@@ -1,6 +1,6 @@
 server.port: 8083
 
-axon.eventhandling.processors.bulk-task-projection:
-  thread-count: 4
-  mode: subscribing
-  initial-segment-count: 4
+#axon.eventhandling.processors.bulk-task-projection:
+#  thread-count: 4
+#  mode: tracking
+#  initial-segment-count: 4

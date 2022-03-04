@@ -13,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.stereotype.Component;
 
-@Profile("query")
-@Service
+@Component
+@EnableRetry
 @Slf4j
 @RequiredArgsConstructor
 @ProcessingGroup("bulk-task-projection")
@@ -28,7 +28,7 @@ public class BulkTaskProjection {
 
     @EventHandler
     public void on(BulkTaskRequestedEvent event) {
-        log.info("EventHandler         BulkTaskRequestedEvent. event : {}", event);
+        log.info("Projecting {}", event);
 
         BulkTask bulkTask = bulkTaskRepository.findById(event.getBulkTaskId()).orElseThrow();
         bulkTask.setPaywdExectYn(PaywdExectYn.INPROGRESS);
@@ -37,7 +37,7 @@ public class BulkTaskProjection {
 
     @EventHandler
     public void on(SingleTaskDoneEvent event) {
-        log.info("EventHandler         SingleTaskDoneEvent. event : {}", event);
+        log.info("Projecting {}", event);
 
         SingleTask singleTask = singleTaskRepository.findById(event.getSingleTaskId()).orElseThrow();
         singleTask.setState(AcdnHdlStatCd.COMPLETED);
@@ -46,7 +46,7 @@ public class BulkTaskProjection {
 
     @EventHandler
     public void on(BulkTaskDoneEvent event) {
-        log.info("EventHandler         BulkTaskDoneEvent. event : {}", event);
+        log.info("Projecting {}", event);
 
         BulkTask bulkTask = bulkTaskRepository.findById(event.getBulkTaskId()).orElseThrow();
         bulkTask.setPaywdExectYn(PaywdExectYn.DONE);
